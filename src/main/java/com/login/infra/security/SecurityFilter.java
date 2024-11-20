@@ -2,7 +2,7 @@ package com.login.infra.security;
 
 import com.login.domain.model.User;
 import com.login.domain.repositories.UserRepository;
-import com.login.exceptions.NotFoundException;
+import com.login.exceptions.UserNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var login = tokenService.validateToken(token);
 
         if(login != null){
-            User user = userRepository.findByEmail(login).orElseThrow(() -> new NotFoundException("User not found"));
+            User user = userRepository.findByEmail(login).orElseThrow(() -> new UserNotFoundException("User not found"));
             var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
             var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
