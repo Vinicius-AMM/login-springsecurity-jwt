@@ -5,7 +5,7 @@ import com.login.domain.dtos.ResponseDto;
 import com.login.domain.dtos.RegisterRequestDto;
 import com.login.domain.model.User;
 import com.login.domain.repositories.UserRepository;
-import com.login.exceptions.NotFoundException;
+import com.login.exceptions.UserNotFoundException;
 import com.login.infra.security.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDto body){
-        User user = this.userRepository.findByEmail(body.email()).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = this.userRepository.findByEmail(body.email()).orElseThrow(() -> new UserNotFoundException("User not found"));
         if(passwordEncoder.matches(body.password(), user.getPassword())){
             String token = this.tokenService.generateToken(user);
             return ResponseEntity.ok(new ResponseDto(user.getName(), token));
